@@ -30,6 +30,11 @@ namespace ApiCore3.Controllers
         [HttpPost]
         public async Task<ActionResult<Category>> Post([FromBody] Category model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             return Ok(model);
         }
 
@@ -38,12 +43,17 @@ namespace ApiCore3.Controllers
 
         public async Task<ActionResult<Category>> Put(int id, [FromBody] Category model)
         {
-            if (model.Id == id)
+            if (model.Id != id)
             {
-                return Ok(model);
+                return NotFound(new { message = "Categoria não encontrada" });
             }
 
-            return NotFound();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(model);
         }
 
         [HttpDelete]
@@ -51,12 +61,17 @@ namespace ApiCore3.Controllers
 
         public async Task<ActionResult<Category>> Delete(int id, [FromBody] Category model)
         {
-            if (model.Id == id)
+            if (model.Id != id)
             {
-                return Ok(model);
+                return NotFound(new { message = "Categoria não encontrada" });
             }
 
-            return NotFound();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(model);
 
         }
     }
