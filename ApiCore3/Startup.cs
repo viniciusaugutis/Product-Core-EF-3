@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -42,6 +43,8 @@ namespace ApiCore3
                     ValidateAudience = false
                 };
             });
+
+            IdentityModelEventSource.ShowPII = true;
 
             //services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("Database"));
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("sqlServer")));
