@@ -17,6 +17,17 @@ namespace ApiCore3.Controllers
     public class UserController : ControllerBase
     {
 
+        [HttpGet]
+        [Authorize(Roles = "manager")]
+        public async Task<ActionResult<List<User>>> Get([FromServices] DataContext context)
+        {
+            return await context
+                .Users
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult<User>> Post([FromServices] DataContext context, [FromBody] User model)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiCore3.Data;
 using ApiCore3.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ namespace ApiCore3.Controllers
     public class ProductController : ControllerBase
     {
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Product>>> Get([FromServices] DataContext context)
         {
             var products = await context.Products.Include(x => x.Category).AsNoTracking().ToListAsync();
@@ -24,6 +26,7 @@ namespace ApiCore3.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Product>> GetById([FromServices] DataContext context, int id)
         {
             var product = await context.Products.Include(x => x.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
@@ -33,6 +36,7 @@ namespace ApiCore3.Controllers
 
         [HttpGet]
         [Route("categories/{id:int}")]
+        [Authorize(Roles = "employee")]
         public async Task<ActionResult<List<Product>>> GetByCategoryId([FromServices] DataContext context, int categoryId)
         {
             var products = await context.Products.Include(x => x.Category).AsNoTracking().Where(x => x.CategoryId == categoryId).ToListAsync();
@@ -42,6 +46,7 @@ namespace ApiCore3.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "employee")]
         public async Task<ActionResult<Product>> Post([FromServices] DataContext context, Product model)
         {
             if (ModelState.IsValid)

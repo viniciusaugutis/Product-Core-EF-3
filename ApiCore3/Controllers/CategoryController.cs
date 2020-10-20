@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiCore3.Data;
 using ApiCore3.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace ApiCore3.Controllers
 
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Category>>> Get([FromServices] DataContext context)
         {
             var categories = await context.Categories.AsNoTracking().ToListAsync();
@@ -26,6 +28,7 @@ namespace ApiCore3.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Category>> GetById(int id, [FromServices] DataContext context)
         {
             var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
@@ -39,6 +42,7 @@ namespace ApiCore3.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "employee")]
         public async Task<ActionResult<Category>> Post([FromBody] Category model, [FromServices] DataContext context)
         {
             if (!ModelState.IsValid)
@@ -64,7 +68,7 @@ namespace ApiCore3.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult<Category>> Put(int id, [FromBody] Category model, [FromServices] DataContext context)
         {
             if (model.Id != id)
@@ -101,7 +105,7 @@ namespace ApiCore3.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
-
+        [Authorize(Roles = "manager")]
         public async Task<ActionResult<Category>> Delete(int id, [FromServices] DataContext context)
         {
 
