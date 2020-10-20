@@ -39,8 +39,10 @@ namespace ApiCore3.Controllers
 
             try
             {
+                model.Role = "employee";
                 context.Users.Add(model);
                 await context.SaveChangesAsync();
+                model.Password = "";
                 return model;
             }
             catch (Exception)
@@ -63,6 +65,7 @@ namespace ApiCore3.Controllers
             }
 
             var token = TokenService.GenerateToken(user);
+            user.Password = "";
             return new
             {
                 user,
